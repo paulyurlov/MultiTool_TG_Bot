@@ -1,0 +1,10 @@
+/bot/.env
+/bot/.deta
+/forwarder/.deta
+/bot/Procfile
+/forwarder/.gitignore
+/forwarder/.env
+/forwarder/__pycache__
+/bot/__pycache__
+/bot/handlers/__pycache__
+commit_message.txt

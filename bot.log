@@ -1,0 +1,6 @@
+bot 2023-01-27 09:22:45,183 INFO Created standart commands handlers
+bot 2023-01-27 09:22:45,183 INFO Created /shrink command handlers
+bot 2023-01-27 09:22:45,183 INFO Created /qr command handlers
+bot 2023-01-27 09:22:45,184 INFO Created /pastebin command handlers
+bot 2023-01-27 09:22:45,184 INFO Created /file command handlers
+bot 2023-01-27 09:22:45,184 INFO Starting bot polling

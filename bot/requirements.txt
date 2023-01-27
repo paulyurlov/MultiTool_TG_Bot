@@ -1,0 +1,3 @@
+aiogram
+validators
+pymongo
