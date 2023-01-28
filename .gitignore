@@ -9,3 +9,7 @@
 /bot/handlers/__pycache__
 commit_message.txt
 bot.log
+/bot/.venv
+/forwarder/.venv
+/bot/.vscode
+/forwarder/.vscode

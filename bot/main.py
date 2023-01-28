@@ -1,7 +1,8 @@
 from aiogram import executor
-from bot_init import dp, bot_logger
-from handlers import shrink_module, standart, qr_module, pastebin_module, fileshare_module
 
+from bot_init import bot_logger, dp
+from handlers import (fileshare_module, pastebin_module, qr_module,
+                      shrink_module, standart)
 
 # Init command handlers
 

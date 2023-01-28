@@ -1,18 +1,11 @@
-from aiogram.dispatcher.filters.state import StatesGroup, State
-from aiogram.dispatcher import FSMContext
-from aiogram import types, Dispatcher
-import hashlib
 import io
-from bot_init import fs, skip_kb, bot, cancel_kb, MY_URL
 import os
 
+from aiogram import Dispatcher, types
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
-# TODO Replace function on more reliable
-def compute_cheap_hash(txt, length=6):
-    # This is just a hash for debugging purposes.
-    #    It does not need to be unique, just fast and short.
-    hash = hashlib.sha256(txt.encode('utf-8'))
-    return hash.hexdigest()[:length]
+from bot_init import MY_URL, bot, cancel_kb, compute_shurt_url, db, fs, skip_kb
 
 
 class FileShareState(StatesGroup):
@@ -20,13 +13,13 @@ class FileShareState(StatesGroup):
     short_url = State()
 
 
-async def file(message: types.Message):
+async def file(message: types.Message, state: FSMContext):
     """
     Реагирует на команду /file
     :message: объект message
     """
     await bot.send_message(message.from_user.id, text=f"Пришли мне файл на который нужно создать ссылку =)", reply_markup=cancel_kb)
-    await FileShareState.get_file.set()
+    await state.set_state(FileShareState.get_file.state)
 
 
 async def get_file(message: types.Message, state: FSMContext):
@@ -41,7 +34,7 @@ async def get_file(message: types.Message, state: FSMContext):
             await message.document.download(file_name)
             await state.update_data(file_path=file_name)
             await bot.send_message(message.from_user.id, text=f"Отлично! A теперь отправь мне короткое название для ссылки или нажми кнопку skip, чтобы я сам сгенерировал название", reply_markup=skip_kb)
-            await FileShareState.short_url.set()
+            await state.set_state(FileShareState.short_url.state)
         else:
             await bot.send_message(message.from_user.id, text="Опа, кажется ты не отправил файл, попробуй еще раз! =)", reply_markup=types.ReplyKeyboardRemove())
             await state.finish()
@@ -51,19 +44,30 @@ async def short_url_fileshare(message: types.Message, state: FSMContext):
     short_url = message.text.strip().lower()
     data = await state.get_data()
     if short_url == 'skip':
-        short_url = compute_cheap_hash(data['file_path'])
+        short_url = compute_shurt_url(data['file_path'])
+        file_id = None
         with io.FileIO(data['file_path'], 'r') as fileObject:
-            _ = fs.put(fileObject, filename=short_url)
+            file_id = fs.put(fileObject, filename=data['file_path'])
+            print(file_id)
+
         os.remove(data['file_path'])
+
+        db['multi_tool'].insert_one(
+            {"short_url": short_url, 'type': 'file', 'file_id': file_id})
         await message.answer("Отлично! Лови короткую ссылку:", reply_markup=types.ReplyKeyboardRemove())
         await message.answer(f"{MY_URL}{short_url}")
         await state.finish()
     else:
-        tmp = fs.find_one({"filename": short_url})
-        if tmp is None:
+        if db['multi_tool'].count_documents({"short_url": short_url}) == 0:
+            file_id = None
             with io.FileIO(data['file_path'], 'r') as fileObject:
-                _ = fs.put(fileObject, filename=short_url)
+                file_id = fs.put(fileObject, filename=data['file_path'])
+                print(file_id)
+
             os.remove(data['file_path'])
+
+            db['multi_tool'].insert_one(
+                {"short_url": short_url, 'type': 'file', 'file_id': file_id})
             await message.answer("Отлично! Лови короткую ссылку:", reply_markup=types.ReplyKeyboardRemove())
             await message.answer(f"{MY_URL}{short_url}")
             await state.finish()
@@ -73,7 +77,7 @@ async def short_url_fileshare(message: types.Message, state: FSMContext):
 
 
 def create_handlers_fileshare(dp: Dispatcher):
-    dp.register_message_handler(file, commands="file")
+    dp.register_message_handler(file, commands="file", state="*")
     dp.register_message_handler(
         get_file, state=FileShareState.get_file, content_types=[types.ContentType.DOCUMENT, types.ContentType.TEXT])
     dp.register_message_handler(

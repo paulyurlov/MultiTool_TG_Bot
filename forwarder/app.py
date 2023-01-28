@@ -1,6 +1,9 @@
 from flask import Flask, redirect, render_template
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from flask import send_file
+import gridfs
+import io
 import os
 
 load_dotenv()
@@ -11,6 +14,10 @@ CON_STRING = os.environ['CON_STRING']
 app = Flask(__name__)
 client = MongoClient(CON_STRING)
 db = client['linkForwarder']
+
+client = MongoClient(CON_STRING)
+db = client['linkForwarder']
+fs = gridfs.GridFS(db)
 
 
 @app.route('/')
@@ -27,5 +34,16 @@ def redirect_link(short_key):
         return render_template('error.html')
 
 
+@app.route('/file-<short_key>')
+def get_file(short_key):
+    if fs.exists(filename=short_key):
+        outputfile = fs.find_one({"filename": short_key})
+        with open(short_key, 'wb') as fileObject:
+            fileObject.write(outputfile.read())
+        return send_file(short_key, as_attachment=True)
+    else:
+        return render_template('error.html')
+
+
 if __name__ == '__main__':
-    app.run(port=69)
+    app.run(port=69, debug=True)

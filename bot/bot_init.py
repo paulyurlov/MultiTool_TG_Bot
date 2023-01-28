@@ -1,13 +1,21 @@
+import hashlib
+import logging
+import os
+
+import gridfs
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from dotenv import load_dotenv
-import os
-from pymongo import MongoClient, ASCENDING
-import gridfs
-import logging
+from pymongo import ASCENDING, MongoClient
 
 load_dotenv()
+
+
+def compute_shurt_url(txt, length=6):
+    hash = hashlib.sha256(txt.encode('utf-8'))
+    return hash.hexdigest()[:length]
+
 
 # Get Bot token and MongoDB connection string from environment
 API_TOKEN = os.environ['API_TOKEN']
@@ -36,13 +44,8 @@ client = MongoClient(CON_STRING)
 db = client['linkForwarder']
 fs = gridfs.GridFS(db)
 
-# _ = db['links'].drop_index('short_url')
-_ = db['links'].create_index([('short_url', ASCENDING)],
-                             unique=True)
-
-# _ = db['pastebin'].drop_index('short_url')
-_ = db['pastebin'].create_index([('short_url', ASCENDING)],
-                                unique=True)
+_ = db['multi_tool'].create_index([('short_url', ASCENDING)],
+                                  unique=True)
 
 # Initialize skip Keyboard
 button_skip = KeyboardButton('skip')
