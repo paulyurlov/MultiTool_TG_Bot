@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span></span><span class="err">@</span><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&lt;short_key&gt;&#39;</span><span class="p">)</span>
+<span class="n">def</span><span class="w"> </span><span class="n">redirect_link</span><span class="p">(</span><span class="n">short_key</span><span class="p">):</span>
+<span class="w">    </span><span class="n">item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">[</span><span class="s1">&#39;multi_tool&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;short_url&#39;</span><span class="p">:</span><span class="w"> </span><span class="n">short_key</span><span class="p">})</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">None</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">redirect</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;original_url&#39;</span><span class="p">])</span>
+<span class="w">    </span><span class="k">else</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;error.html&#39;</span><span class="p">)</span>
+</pre></div>
