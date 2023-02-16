@@ -5,6 +5,11 @@ FROM python:3.10-slim-buster
 
 COPY . .
 
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && \
+    apt-get -y install gcc mono-mcs && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN pip install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN apt install gcc
