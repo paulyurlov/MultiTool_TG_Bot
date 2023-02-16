@@ -1,6 +1,5 @@
 from flask import Flask, redirect, render_template, session, request, jsonify
 from pymongo import MongoClient
-from dotenv import load_dotenv
 from flask import send_file
 import gridfs
 import io
@@ -10,8 +9,6 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import guess_lexer, PythonLexer
 
-
-load_dotenv()
 
 CON_STRING = os.environ['CON_STRING']
 
