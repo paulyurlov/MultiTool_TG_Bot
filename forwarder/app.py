@@ -5,9 +5,9 @@ import gridfs
 import io
 import os
 
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import guess_lexer, PythonLexer
+# from pygments import highlight
+# from pygments.formatters import HtmlFormatter
+# from pygments.lexers import guess_lexer, PythonLexer
 
 
 CON_STRING = os.environ['CON_STRING']
