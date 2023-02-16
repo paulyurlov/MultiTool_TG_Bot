@@ -60,42 +60,42 @@ def redirect_link(short_key):
         return render_template('error.html')
 
 
-@app.route('/file-<short_key>')
-def get_file(short_key):
-    if fs.exists(filename=short_key):
-        outputfile = fs.find_one({"filename": short_key})
-        with open(short_key, 'wb') as fileObject:
-            fileObject.write(outputfile.read())
-        return send_file(short_key, as_attachment=True)
-    else:
-        return render_template('error.html')
+# @app.route('/file-<short_key>')
+# def get_file(short_key):
+#     if fs.exists(filename=short_key):
+#         outputfile = fs.find_one({"filename": short_key})
+#         with open(short_key, 'wb') as fileObject:
+#             fileObject.write(outputfile.read())
+#         return send_file(short_key, as_attachment=True)
+#     else:
+#         return render_template('error.html')
 
 
-@app.route('/pastebin')
-def get_pastebin():
-    formatter = HtmlFormatter()
-    lexer = guess_lexer(TMP)
-    result = highlight(TMP, lexer, formatter)
-    with open('templates/pastebin_code.html', 'w') as f:
-        f.write(result)
-    with open('static/styles/pastebin_code.css', 'w') as f:
-        f.write(formatter.get_style_defs())
-    # print(request.args['switch'])
-    print('lol')
-    return render_template('pastebin.html')
+# @app.route('/pastebin')
+# def get_pastebin():
+#     formatter = HtmlFormatter()
+#     lexer = guess_lexer(TMP)
+#     result = highlight(TMP, lexer, formatter)
+#     with open('templates/pastebin_code.html', 'w') as f:
+#         f.write(result)
+#     with open('static/styles/pastebin_code.css', 'w') as f:
+#         f.write(formatter.get_style_defs())
+#     # print(request.args['switch'])
+#     print('lol')
+#     return render_template('pastebin.html')
 
 
-@app.route('/change_theme', methods=['POST'])
-def theme_switcher():
-    data = request.get_json()
-    print(data)
-    return 'Data received'
+# @app.route('/change_theme', methods=['POST'])
+# def theme_switcher():
+#     data = request.get_json()
+#     print(data)
+#     return 'Data received'
 
 
-@app.route('/get_theme', methods=['GET'])
-def get_theme():
-    data = {'theme': 'dark'}
-    return jsonify(data)
+# @app.route('/get_theme', methods=['GET'])
+# def get_theme():
+#     data = {'theme': 'dark'}
+#     return jsonify(data)
 
 
 if __name__ == '__main__':
