@@ -6,10 +6,7 @@ import gridfs
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-from dotenv import load_dotenv
 from pymongo import ASCENDING, MongoClient
-
-load_dotenv()
 
 
 def compute_shurt_url(txt, length=6):
