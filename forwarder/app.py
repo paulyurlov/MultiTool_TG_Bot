@@ -96,4 +96,4 @@ def redirect_link(short_key):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=69)
+    app.run(host='0.0.0.0', port=69, debug=True)
