@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM tiangolo/uwsgi-nginx-flask:3.10-slim-buster
+FROM python:3.10-slim-buster
 
 COPY . .
 
