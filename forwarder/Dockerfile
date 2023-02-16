@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 
+FROM ubuntu
 FROM python:3.10-slim-buster
 
 COPY . .
